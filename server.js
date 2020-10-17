@@ -1,5 +1,6 @@
 const express = require('express');
 const fs = require('fs');
+const mysql = require('mysql');
 const app = express();
 app.use(express.static('web'));
 app.get('/hello', (req, res) => {
@@ -26,6 +27,14 @@ app.get('/dirlist', (req, res) => {
 				</html>
 			`);
 	});
+});
+app.get('/getempcount', (req, res) => {
+	let db = mysql.createConnection({hostname: 'localhost', port: 3306, database: 'employees', user: 'kenny', password: '123'});
+	db.query('select count(*) empcount from employees', (err, result) => {
+		let finalcount = ''+result[0]['empcount'];
+		res.send(finalcount);
+	});
+	db.end();
 });
 app.listen(8000, () => {
   console.log('Server is ready');
